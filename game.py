@@ -19,7 +19,11 @@ class Game:
         self.display.window.after(self.game_tick_time, self.game_loop)
 
     def game_loop(self):
-        self.grid.blocks[(4, 4)].change_colour("red", self.display.canvas)
+        self.grid.generate_block()
+        for each in self.grid.blocks:
+            positions = each.get_grid_positions()
+            for pos in positions:
+                self.grid.cells[pos].change_colour(each.colour, self.display.canvas)
         self.set_game_loop()
 
     def run(self):
