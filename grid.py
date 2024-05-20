@@ -1,4 +1,4 @@
-from block import Block
+from cell import Cell
 
 
 class Grid:
@@ -11,7 +11,7 @@ class Grid:
         blocks = {}
         for x in range(self.across):
             for y in range(self.down):
-                blocks[(x, y)] = Block(x, y)
+                blocks[(x, y)] = Cell(x, y)
 
         return blocks
 
