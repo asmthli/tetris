@@ -8,11 +8,28 @@ class Grid:
         self.across = across
         self.down = down
         self.cells = self.create()
-        self.blocks = []
+        self.active_blocks = []
 
     def generate_block(self):
         block = random.choice(BLOCK_TYPES)
-        self.blocks.append(block())
+        x_offset = random.randint(0, self.across-1-3)
+        self.active_blocks.append(block(x_offset))
+
+    def update_cell_colours(self):
+        """
+        Updates the grid cell colours for each of the active blocks.
+        This should be called whenever a block has moved - i.e. once every game tick.
+
+        Note that the actual redrawing of cells is done in the display module.
+        :return: None
+        """
+        for cell in self.cells.values():
+            cell.reset()
+
+        for block in self.active_blocks:
+            block_grid_positions = block.get_grid_positions()
+            for position in block_grid_positions:
+                self.cells[position].colour = block.colour
 
     def create(self):
         cells = {}

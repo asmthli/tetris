@@ -19,12 +19,22 @@ class Display:
             x1 = x0 + cell_size
             y1 = y0 + cell_size
             cell.display_rectangle = canvas.create_rectangle(x0, y0, x1, y1,
-                                                             fill=cell.colour,
-                                                             outline=cell.outline_colour)
+                                                             outline=cell.outline_colour,
+                                                             fill=cell.empty_colour)
 
         canvas.pack()
 
         return canvas
+
+    def clear_cell_colours(self):
+        for cell in self.grid.cells.values():
+            self.canvas.itemconfig(cell.display_rectangle, fill=cell.empty_colour)
+
+    def update_cells(self):
+        self.clear_cell_colours()
+
+        for cell in self.grid.cells.values():
+            self.canvas.itemconfig(cell.display_rectangle, fill=cell.colour)
 
     def start(self):
         self.window.mainloop()

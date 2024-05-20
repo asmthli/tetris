@@ -20,10 +20,21 @@ class Game:
 
     def game_loop(self):
         self.grid.generate_block()
-        for each in self.grid.blocks:
-            positions = each.get_grid_positions()
-            for pos in positions:
-                self.grid.cells[pos].change_colour(each.colour, self.display.canvas)
+
+        self.grid.update_cell_colours()
+        self.display.update_cells()
+
+
+
+        # for each in self.grid.blocks:
+        #     positions = each.get_grid_positions()
+        #     for pos in positions:
+        #         self.grid.cells[pos].change_colour(each.colour, self.display.canvas)
+
+        for block in self.grid.active_blocks:
+            block.move_down()
+
+
         self.set_game_loop()
 
     def run(self):
