@@ -1,9 +1,11 @@
 from display import Display
+from grid import Grid
 
 
 class Game:
-    def __init__(self):
-        self.display = Display()
+    def __init__(self, grid_across=10, grid_down=20):
+        self.grid = Grid(grid_across, grid_down)
+        self.display = Display(self.grid)
         self.game_tick_time = 1000  # 1000ms
 
     def set_game_loop(self):
@@ -17,7 +19,7 @@ class Game:
         self.display.window.after(self.game_tick_time, self.game_loop)
 
     def game_loop(self):
-        print("Test")
+        self.grid.blocks[(4, 4)].change_colour("red", self.display.canvas)
         self.set_game_loop()
 
     def run(self):
