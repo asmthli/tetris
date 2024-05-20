@@ -6,7 +6,9 @@ class Game:
     def __init__(self, grid_across=10, grid_down=20):
         self.grid = Grid(grid_across, grid_down)
         self.display = Display(self.grid)
-        self.game_tick_time = 1000  # 1000ms
+        self.game_tick_time = 50  # 1000ms
+
+        self.grid.generate_block()
 
     def set_game_loop(self):
         """
@@ -19,21 +21,13 @@ class Game:
         self.display.window.after(self.game_tick_time, self.game_loop)
 
     def game_loop(self):
-        self.grid.generate_block()
-
         self.grid.update_cell_colours()
         self.display.update_cells()
 
-
-
-        # for each in self.grid.blocks:
-        #     positions = each.get_grid_positions()
-        #     for pos in positions:
-        #         self.grid.cells[pos].change_colour(each.colour, self.display.canvas)
-
-        for block in self.grid.active_blocks:
-            block.move_down()
-
+        if not self.grid.current_block.check_for_collisions(self.grid):
+            self.grid.current_block.move_down()
+        else:
+            self.grid.generate_block()
 
         self.set_game_loop()
 

@@ -33,15 +33,19 @@ class Block:
     def rotate(self):
         pass
 
-    def check_for_collision(self, grid):
+    def check_for_collisions(self, grid):
         """
         Checks for collision with other blocks and the bottom of the grid.
         :return: True if collision. False if not.
         """
         # Checking collision with bottom of the grid.
 
-        for _, y in self.get_grid_positions():
-            print(y)
+        for x, y in self.get_grid_positions():
+            print(x, y)
+            if y >= grid.down - 1:
+                return True
+
+        return False
 
 
 class Square(Block):

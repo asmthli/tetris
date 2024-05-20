@@ -1,5 +1,5 @@
 from cell import Cell
-from block import BLOCK_TYPES
+from block import BLOCK_TYPES, Block
 import random
 
 
@@ -9,11 +9,14 @@ class Grid:
         self.down = down
         self.cells = self.create()
         self.active_blocks = []
+        self.current_block = None
 
     def generate_block(self):
-        block = random.choice(BLOCK_TYPES)
         x_offset = random.randint(0, self.across-1-3)
-        self.active_blocks.append(block(x_offset))
+        block = random.choice(BLOCK_TYPES)(x_offset)
+
+        self.active_blocks.append(block)
+        self.current_block = block
 
     def update_cell_colours(self):
         """
