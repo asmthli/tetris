@@ -7,6 +7,17 @@ class Display:
         self.window = tkinter.Tk()
         self.window.title("Tetris")
         self.canvas = self.setup_grid_canvas(grid.across, grid.down, 30)
+        self.set_up_bindings()
+
+    def set_up_bindings(self):
+        def left_handler(event):
+            self.grid.current_block.move_left()
+
+        def right_handler(event):
+            self.grid.current_block.move_right()
+
+        self.window.bind("a", left_handler)
+        self.window.bind("d", right_handler)
 
     def setup_grid_canvas(self, grid_across, grid_down, cell_size):
         canvas = tkinter.Canvas(master=self.window, width=grid_across * cell_size, height=grid_down * cell_size,
