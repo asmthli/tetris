@@ -17,7 +17,7 @@ class Display:
             self.grid.current_block.attempt_move_right(self.grid)
 
         def rotation_handler(event):
-            self.grid.current_block.attempt_rotation()
+            self.grid.current_block.attempt_rotation(self.grid)
 
         self.window.bind("a", left_handler)
         self.window.bind("d", right_handler)

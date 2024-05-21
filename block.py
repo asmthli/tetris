@@ -56,8 +56,10 @@ class Block:
         elif direction == "left":
             self.grid_x_offset += 1
 
-    def attempt_rotation(self):
-        self.shape = np.rot90(self.shape)
+    def attempt_rotation(self, grid):
+        can_rotate = not self.has_side_collision(grid, "rotation")
+        if can_rotate:
+            self.shape = np.rot90(self.shape)
 
     def has_bottom_collision(self, grid):
         """
@@ -72,17 +74,26 @@ class Block:
 
         return False
 
-    def has_side_collision(self, grid, direction):
+    def has_side_collision(self, grid, transformation):
         cell_positions = self.get_grid_positions()
 
-        if direction == "left":
+        if transformation == "left":
             for x, _ in cell_positions:
                 if x == 0:
                     return True
-        elif direction == "right":
+        elif transformation == "right":
             for x, _ in cell_positions:
                 if x == grid.across - 1:
                     return True
+        elif transformation == "rotation":
+            self.shape = np.rot90(self.shape)
+            cell_positions = self.get_grid_positions()
+            for x, _ in cell_positions:
+                if x > grid.across - 1:
+                    self.shape = np.rot90(self.shape, k=3)
+                    return True
+            self.shape = np.rot90(self.shape, k=3)
+
         return False
 
     def has_block_collision(self, grid, direction):
