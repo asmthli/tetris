@@ -11,10 +11,10 @@ class Display:
 
     def set_up_bindings(self):
         def left_handler(event):
-            self.grid.current_block.move_left()
+            self.grid.current_block.attempt_move_left(self.grid)
 
         def right_handler(event):
-            self.grid.current_block.move_right()
+            self.grid.current_block.attempt_move_right(self.grid)
 
         self.window.bind("a", left_handler)
         self.window.bind("d", right_handler)

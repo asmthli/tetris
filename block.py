@@ -21,30 +21,45 @@ class Block:
 
         return positions
 
-    def move_down(self):
-        self.grid_y_offset += 1
+    def attempt_move_down(self, grid):
+        can_move = not self.has_bottom_collision(grid) and not self.has_block_collision(grid, "down")
+        if can_move:
+            self.grid_y_offset += 1
+            return True
+        else:
+            return False
 
     def move_up(self):
         self.grid_y_offset -= 1
 
-    def move_left(self):
-        self.grid_x_offset -= 1
+    def attempt_move_left(self, grid):
+        can_move = not self.has_block_collision(grid, "left")
+        if can_move:
+            self.grid_x_offset -= 1
+            return True
+        else:
+            return False
 
-    def move_right(self):
-        self.grid_x_offset += 1
+    def attempt_move_right(self, grid):
+        can_move = not self.has_block_collision(grid, "right")
+        if can_move:
+            self.grid_x_offset += 1
+            return True
+        else:
+            return False
 
     def undo_movement(self, direction):
         if direction == "down":
-            self.move_up()
+            self.grid_y_offset -= 1
         elif direction == "right":
-            self.move_left()
+            self.grid_x_offset -= 1
         elif direction == "left":
-            self.move_right()
+            self.grid_x_offset += 1
 
     def rotate(self):
         pass
 
-    def check_for_bottom_collision(self, grid):
+    def has_bottom_collision(self, grid):
         """
         Checks for collision with the bottom of the grid.
         :return: True if collision. False if not.
@@ -57,7 +72,7 @@ class Block:
 
         return False
 
-    def check_for_block_collision(self, grid, direction):
+    def has_block_collision(self, grid, direction):
         """
         Checks for collision with any of the other active blocks.
         :return: True if collision. False if not.
@@ -65,11 +80,11 @@ class Block:
         # We do this by moving the block in the direction of travel for the game tick (always to include down)
         # If this move results in a collision, undo the movement in the direction that caused the collision.
         if direction == "down":
-            self.move_down()
+            self.grid_y_offset += 1
         elif direction == "right":
-            self.move_right()
+            self.grid_x_offset += 1
         elif direction == "left":
-            self.move_left()
+            self.grid_x_offset -= 1
         current_active_cells = self.get_grid_positions()
 
         for block in grid.active_blocks:

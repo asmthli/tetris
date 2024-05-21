@@ -24,9 +24,8 @@ class Game:
         self.grid.update_cell_colours()
         self.display.update_cells()
 
-        if not self.grid.current_block.check_for_bottom_collision(self.grid) and not self.grid.current_block.check_for_block_collision(self.grid, "down"):
-            self.grid.current_block.move_down()
-        else:
+        move_successful = self.grid.current_block.attempt_move_down(self.grid)
+        if not move_successful:
             self.grid.generate_new_block()
 
         self.set_game_loop()
