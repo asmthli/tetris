@@ -16,8 +16,12 @@ class Display:
         def right_handler(event):
             self.grid.current_block.attempt_move_right(self.grid)
 
+        def rotation_handler(event):
+            self.grid.current_block.attempt_rotation()
+
         self.window.bind("a", left_handler)
         self.window.bind("d", right_handler)
+        self.window.bind("w", rotation_handler)
 
     def setup_grid_canvas(self, grid_across, grid_down, cell_size):
         canvas = tkinter.Canvas(master=self.window, width=grid_across * cell_size, height=grid_down * cell_size,

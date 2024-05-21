@@ -56,8 +56,8 @@ class Block:
         elif direction == "left":
             self.grid_x_offset += 1
 
-    def rotate(self):
-        pass
+    def attempt_rotation(self):
+        self.shape = np.rot90(self.shape)
 
     def has_bottom_collision(self, grid):
         """
@@ -119,18 +119,17 @@ class Square(Block):
     def __init__(self, x_offset):
         super().__init__(x_offset)
         self.colour = "yellow"
-        self.shape = np.array([[1, 1, 0],
-                               [1, 1, 0],
-                               [0, 0, 0]])
+        self.shape = np.array([[1, 1],
+                               [1, 1]])
 
 
 class L(Block):
     def __init__(self, x_offset):
         super().__init__(x_offset)
         self.colour = "orange"
-        self.shape = np.array([[1, 0, 0],
-                               [1, 0, 0],
-                               [1, 1, 0]])
+        self.shape = np.array([[1, 0],
+                               [1, 0],
+                               [1, 1]])
 
 
 class T(Block):
@@ -138,8 +137,7 @@ class T(Block):
         super().__init__(x_offset)
         self.colour = "purple"
         self.shape = np.array([[0, 1, 0],
-                               [1, 1, 1],
-                               [0, 0, 0]])
+                               [1, 1, 1]])
 
 
 class Z(Block):
@@ -155,10 +153,10 @@ class Line(Block):
     def __init__(self, x_offset):
         super().__init__(x_offset)
         self.colour = "blue"
-        self.shape = np.array([[0, 1, 0],
-                               [0, 1, 0],
-                               [0, 1, 0],
-                               [0, 1, 0]])
+        self.shape = np.array([[1],
+                               [1],
+                               [1],
+                               [1]])
 
 
 BLOCK_TYPES = [Square, Line, Z, L, T]
