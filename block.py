@@ -33,7 +33,7 @@ class Block:
         self.grid_y_offset -= 1
 
     def attempt_move_left(self, grid):
-        can_move = not self.has_block_collision(grid, "left")
+        can_move = not self.has_block_collision(grid, "left") and not self.has_side_collision(grid, "left")
         if can_move:
             self.grid_x_offset -= 1
             return True
@@ -41,7 +41,7 @@ class Block:
             return False
 
     def attempt_move_right(self, grid):
-        can_move = not self.has_block_collision(grid, "right")
+        can_move = not self.has_block_collision(grid, "right") and not self.has_side_collision(grid, "right")
         if can_move:
             self.grid_x_offset += 1
             return True
@@ -70,6 +70,19 @@ class Block:
             if y >= grid.down - 1:
                 return True
 
+        return False
+
+    def has_side_collision(self, grid, direction):
+        cell_positions = self.get_grid_positions()
+
+        if direction == "left":
+            for x, _ in cell_positions:
+                if x == 0:
+                    return True
+        elif direction == "right":
+            for x, _ in cell_positions:
+                if x == grid.across - 1:
+                    return True
         return False
 
     def has_block_collision(self, grid, direction):
