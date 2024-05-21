@@ -11,7 +11,7 @@ class Grid:
         self.active_blocks = []
         self.current_block = None
 
-    def generate_block(self):
+    def generate_new_block(self):
         x_offset = random.randint(0, self.across-1-3)
         block = random.choice(BLOCK_TYPES)(x_offset)
 

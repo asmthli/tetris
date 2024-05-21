@@ -8,7 +8,7 @@ class Game:
         self.display = Display(self.grid)
         self.game_tick_time = 50  # 1000ms
 
-        self.grid.generate_block()
+        self.grid.generate_new_block()
 
     def set_game_loop(self):
         """
@@ -24,10 +24,10 @@ class Game:
         self.grid.update_cell_colours()
         self.display.update_cells()
 
-        if not self.grid.current_block.check_for_collisions(self.grid):
+        if not self.grid.current_block.check_for_bottom_collision(self.grid) and not self.grid.current_block.check_for_block_collision(self.grid, "down"):
             self.grid.current_block.move_down()
         else:
-            self.grid.generate_block()
+            self.grid.generate_new_block()
 
         self.set_game_loop()
 

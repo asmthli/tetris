@@ -24,27 +24,66 @@ class Block:
     def move_down(self):
         self.grid_y_offset += 1
 
+    def move_up(self):
+        self.grid_y_offset -= 1
+
     def move_left(self):
         self.grid_x_offset -= 1
 
     def move_right(self):
         self.grid_x_offset += 1
 
+    def undo_movement(self, direction):
+        if direction == "down":
+            self.move_up()
+        elif direction == "right":
+            self.move_left()
+        elif direction == "left":
+            self.move_right()
+
     def rotate(self):
         pass
 
-    def check_for_collisions(self, grid):
+    def check_for_bottom_collision(self, grid):
         """
-        Checks for collision with other blocks and the bottom of the grid.
+        Checks for collision with the bottom of the grid.
         :return: True if collision. False if not.
         """
-        # Checking collision with bottom of the grid.
 
-        for x, y in self.get_grid_positions():
-            print(x, y)
+        # Checking collision with bottom of the grid.
+        for _, y in self.get_grid_positions():
             if y >= grid.down - 1:
                 return True
 
+        return False
+
+    def check_for_block_collision(self, grid, direction):
+        """
+        Checks for collision with any of the other active blocks.
+        :return: True if collision. False if not.
+        """
+        # We do this by moving the block in the direction of travel for the game tick (always to include down)
+        # If this move results in a collision, undo the movement in the direction that caused the collision.
+        if direction == "down":
+            self.move_down()
+        elif direction == "right":
+            self.move_right()
+        elif direction == "left":
+            self.move_left()
+        current_active_cells = self.get_grid_positions()
+
+        for block in grid.active_blocks:
+            if block == self:
+                pass
+            else:
+                block_active_cells = block.get_grid_positions()
+
+                for cell_current in current_active_cells:
+                    for cell_block in block_active_cells:
+                        if cell_current == cell_block:
+                            self.undo_movement(direction)
+                            return True
+        self.undo_movement(direction)
         return False
 
 
