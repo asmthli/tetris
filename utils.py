@@ -23,3 +23,10 @@ def average_run_timer(func):
         return output
 
     return wrapper
+
+test_list = [1,2,3,4]
+
+for each in test_list:
+    print(f"entering for {each}")
+    print(each)
+    test_list.remove(each)
