@@ -6,7 +6,7 @@ class Game:
     def __init__(self, grid_across=10, grid_down=20):
         self.grid = Grid(grid_across, grid_down)
         self.display = Display(self.grid)
-        self.game_tick_time = 50  # 1000ms
+        self.game_tick_time = 100  # 1000ms
 
         self.grid.generate_new_block()
 
@@ -27,6 +27,7 @@ class Game:
         move_successful = self.grid.current_block.attempt_move_down(self.grid)
         if not move_successful:
             self.grid.mark_cells_active()
+            self.grid.check_for_complete_rows()
             self.grid.generate_new_block()
 
         self.set_game_loop()
