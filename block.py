@@ -8,8 +8,9 @@ class Block:
         self.grid_y_offset = 0
         self.rotation_offset = 0
         self.shape = None
+        self.block_cell_positions = None
 
-    def get_grid_positions(self):
+    def update_cell_positions(self):
         positions = []
         for y in range(self.shape.shape[0]):
             for x in range(self.shape.shape[1]):
@@ -25,25 +26,29 @@ class Block:
         can_move = not self.has_bottom_collision(grid) and not self.has_block_collision(grid, "down")
         if can_move:
             self.grid_y_offset += 1
+            self.block_cell_positions = self.update_cell_positions()
             return True
         else:
             return False
 
     def move_up(self):
         self.grid_y_offset -= 1
+        self.block_cell_positions = self.update_cell_positions()
 
     def attempt_move_left(self, grid):
-        can_move = not self.has_block_collision(grid, "left") and not self.has_side_collision(grid, "left")
+        can_move = not self.has_block_collision(grid, "left") and not self.has_wall_collision(grid, "left")
         if can_move:
             self.grid_x_offset -= 1
+            self.block_cell_positions = self.update_cell_positions()
             return True
         else:
             return False
 
     def attempt_move_right(self, grid):
-        can_move = not self.has_block_collision(grid, "right") and not self.has_side_collision(grid, "right")
+        can_move = not self.has_block_collision(grid, "right") and not self.has_wall_collision(grid, "right")
         if can_move:
             self.grid_x_offset += 1
+            self.block_cell_positions = self.update_cell_positions()
             return True
         else:
             return False
@@ -55,11 +60,13 @@ class Block:
             self.grid_x_offset -= 1
         elif direction == "left":
             self.grid_x_offset += 1
+        self.block_cell_positions = self.update_cell_positions()
 
     def attempt_rotation(self, grid):
-        can_rotate = not self.has_side_collision(grid, "rotation")
+        can_rotate = not self.has_wall_collision(grid, "rotation")
         if can_rotate:
             self.shape = np.rot90(self.shape)
+            self.block_cell_positions = self.update_cell_positions()
 
     def has_bottom_collision(self, grid):
         """
@@ -68,27 +75,25 @@ class Block:
         """
 
         # Checking collision with bottom of the grid.
-        for _, y in self.get_grid_positions():
+        for _, y in self.block_cell_positions:
             if y >= grid.down - 1:
                 return True
 
         return False
 
-    def has_side_collision(self, grid, transformation):
-        cell_positions = self.get_grid_positions()
-
+    def has_wall_collision(self, grid, transformation):
         if transformation == "left":
-            for x, _ in cell_positions:
+            for x, _ in self.block_cell_positions:
                 if x == 0:
                     return True
         elif transformation == "right":
-            for x, _ in cell_positions:
+            for x, _ in self.block_cell_positions:
                 if x == grid.across - 1:
                     return True
         elif transformation == "rotation":
             self.shape = np.rot90(self.shape)
-            cell_positions = self.get_grid_positions()
-            for x, _ in cell_positions:
+            potential_cell_positions = self.update_cell_positions()
+            for x, _ in potential_cell_positions:
                 if x > grid.across - 1:
                     self.shape = np.rot90(self.shape, k=3)
                     return True
@@ -109,19 +114,15 @@ class Block:
             self.grid_x_offset += 1
         elif direction == "left":
             self.grid_x_offset -= 1
-        current_active_cells = self.get_grid_positions()
+        # TODO: Uncouple the cell positions used in this movement 'testing' from the actual cell positions.
+        self.block_cell_positions = self.update_cell_positions()
 
-        for block in grid.active_blocks:
-            if block == self:
-                pass
-            else:
-                block_active_cells = block.get_grid_positions()
-
-                for cell_current in current_active_cells:
-                    for cell_block in block_active_cells:
-                        if cell_current == cell_block:
-                            self.undo_movement(direction)
-                            return True
+        for cell in grid.active_cells:
+            for block_cell_position in self.block_cell_positions:
+                cell_position = (cell.x_grid_coord, cell.y_grid_coord)
+                if cell_position == block_cell_position:
+                    self.undo_movement(direction)
+                    return True
         self.undo_movement(direction)
         return False
 
@@ -132,6 +133,7 @@ class Square(Block):
         self.colour = "yellow"
         self.shape = np.array([[1, 1],
                                [1, 1]])
+        self.block_cell_positions = self.update_cell_positions()
 
 
 class L(Block):
@@ -141,6 +143,7 @@ class L(Block):
         self.shape = np.array([[1, 0],
                                [1, 0],
                                [1, 1]])
+        self.block_cell_positions = self.update_cell_positions()
 
 
 class T(Block):
@@ -149,6 +152,7 @@ class T(Block):
         self.colour = "purple"
         self.shape = np.array([[0, 1, 0],
                                [1, 1, 1]])
+        self.block_cell_positions = self.update_cell_positions()
 
 
 class Z(Block):
@@ -158,6 +162,7 @@ class Z(Block):
         self.shape = np.array([[1, 0, 0],
                                [1, 1, 0],
                                [0, 1, 0]])
+        self.block_cell_positions = self.update_cell_positions()
 
 
 class Line(Block):
@@ -168,6 +173,7 @@ class Line(Block):
                                [1],
                                [1],
                                [1]])
+        self.block_cell_positions = self.update_cell_positions()
 
 
 BLOCK_TYPES = [Square, Line, Z, L, T]

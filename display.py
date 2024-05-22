@@ -1,4 +1,5 @@
 import tkinter
+from utils import average_run_timer
 
 
 class Display:
@@ -41,15 +42,10 @@ class Display:
 
         return canvas
 
-    def clear_cell_colours(self):
-        for cell in self.grid.cells.values():
-            self.canvas.itemconfig(cell.display_rectangle, fill=cell.empty_colour)
-
+    @average_run_timer
     def update_cells(self):
-        self.clear_cell_colours()
-
         for cell in self.grid.cells.values():
-            self.canvas.itemconfig(cell.display_rectangle, fill=cell.colour)
+            self.canvas.itemconfig(cell.display_rectangle, fill=cell.get_colour())
 
     def start(self):
         self.window.mainloop()

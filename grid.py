@@ -1,5 +1,5 @@
 from cell import Cell
-from block import BLOCK_TYPES, Block
+from block import BLOCK_TYPES
 import random
 
 
@@ -8,15 +8,23 @@ class Grid:
         self.across = across
         self.down = down
         self.cells = self.create()
-        self.active_blocks = []
+        self.active_cells = []
         self.current_block = None
 
     def generate_new_block(self):
         x_offset = random.randint(0, self.across-1-3)
         block = random.choice(BLOCK_TYPES)(x_offset)
 
-        self.active_blocks.append(block)
         self.current_block = block
+
+    def mark_cells_active(self):
+        """
+        To be used when a block comes to a stop. Cells are marked active for later collision detection etc.
+        :return: None
+        """
+        for x, y in self.current_block.block_cell_positions:
+            active_cell = self.cells[(x, y)]
+            self.active_cells.append(active_cell)
 
     def update_cell_colours(self):
         """
@@ -27,12 +35,15 @@ class Grid:
         :return: None
         """
         for cell in self.cells.values():
-            cell.reset()
+            cell.active = False
 
-        for block in self.active_blocks:
-            block_grid_positions = block.get_grid_positions()
-            for position in block_grid_positions:
-                self.cells[position].colour = block.colour
+        for cell in self.active_cells:
+            cell.active = True
+
+        for x, y in self.current_block.block_cell_positions:
+            cell = self.cells[(x, y)]
+            cell.active = True
+            cell.active_colour = self.current_block.colour
 
     def create(self):
         cells = {}

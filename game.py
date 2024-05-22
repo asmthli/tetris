@@ -26,6 +26,7 @@ class Game:
 
         move_successful = self.grid.current_block.attempt_move_down(self.grid)
         if not move_successful:
+            self.grid.mark_cells_active()
             self.grid.generate_new_block()
 
         self.set_game_loop()
