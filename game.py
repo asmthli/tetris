@@ -5,8 +5,8 @@ from grid import Grid
 class Game:
     def __init__(self, grid_across=10, grid_down=20):
         self.grid = Grid(grid_across, grid_down)
+        self.game_tick_time = 200  # ms
         self.display = Display(self.grid, 30)
-        self.game_tick_time = 100  # 1000ms
         self.game_loop_id = None
         self.score = 0
 
@@ -20,6 +20,11 @@ class Game:
         game loop event after the given time.
         :return:
         """
+        if self.display.down_pressed:
+            self.game_tick_time = 20
+        else:
+            self.game_tick_time = 200
+
         self.game_loop_id = self.display.window.after(self.game_tick_time, self.game_loop)
 
     def game_loop(self):

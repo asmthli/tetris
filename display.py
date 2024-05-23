@@ -11,6 +11,9 @@ class Display:
         self.canvas_height = grid.down * grid_cell_size
         self.canvas_width = grid.across * grid_cell_size
         self.canvas = self.setup_grid_canvas(grid_cell_size)
+        self.score_text = self.setup_score()
+
+        self.down_pressed = False
         self.set_up_bindings()
 
     def set_up_bindings(self):
@@ -23,9 +26,17 @@ class Display:
         def rotation_handler(event):
             self.grid.current_block.attempt_rotation(self.grid)
 
+        def down_press_handler(event):
+            self.down_pressed = True
+
+        def down_release_handler(event):
+            self.down_pressed = False
+
         self.window.bind("a", left_handler)
         self.window.bind("d", right_handler)
         self.window.bind("w", rotation_handler)
+        self.window.bind("<KeyPress-s>", down_press_handler)
+        self.window.bind("<KeyRelease-s>", down_release_handler)
 
     def setup_grid_canvas(self, grid_cell_size):
         canvas = tkinter.Canvas(master=self.window, width=self.canvas_width, height=self.canvas_height,
@@ -44,6 +55,11 @@ class Display:
         canvas.pack()
 
         return canvas
+
+    def setup_score(self):
+        score_text = tkinter.Text()
+
+        return score_text
 
     @average_run_timer
     def update_cells(self):
