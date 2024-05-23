@@ -5,7 +5,7 @@ from grid import Grid
 class Game:
     def __init__(self, grid_across=10, grid_down=20):
         self.grid = Grid(grid_across, grid_down)
-        self.display = Display(self.grid)
+        self.display = Display(self.grid, 30)
         self.game_tick_time = 100  # 1000ms
         self.game_loop_id = None
         self.score = 0
@@ -57,6 +57,7 @@ class Game:
 
     def game_over(self):
         self.display.window.after_cancel(self.game_loop_id)
+        self.display.show_game_over(self.score)
 
 
 if __name__ == "__main__":
