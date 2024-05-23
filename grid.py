@@ -12,10 +12,24 @@ class Grid:
         self.current_block = None
 
     def generate_new_block(self):
-        x_offset = random.randint(0, self.across - 1 - 3)
-        block = random.choice(BLOCK_TYPES)(x_offset)
+        potential_x_offsets = list(range(0, self.across - 1 - 3))
+        block_type = random.choice(BLOCK_TYPES)
 
-        self.current_block = block
+        while potential_x_offsets:
+            x_offset = random.choice(potential_x_offsets)
+            potential_x_offsets.remove(x_offset)
+
+            block = block_type(x_offset)
+
+            if block.has_block_collision(self):
+                if not potential_x_offsets:
+                    # The block cannot be placed - game over.
+                    return True
+                else:
+                    continue
+            else:
+                self.current_block = block
+                return False
 
     def mark_cells_active(self):
         """

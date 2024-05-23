@@ -101,7 +101,7 @@ class Block:
 
         return False
 
-    def has_block_collision(self, grid, direction):
+    def has_block_collision(self, grid, direction="none"):
         """
         Checks for collision with any of the other active blocks.
         :return: True if collision. False if not.
