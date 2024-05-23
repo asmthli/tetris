@@ -74,16 +74,24 @@ class Grid:
                 self.active_cells.remove(current_cell)
 
     def delete_complete_rows(self):
-        y = self.check_for_complete_rows()
+        deleted_row_count = 0
 
-        if y is not None:
-            for x in range(0, self.across):
-                cell = self.cells[(x, y)]
-                cell.active = False
-                self.active_cells.remove(cell)
-            # Dealing with potential multiple complete rows.
-            self.delete_complete_rows()
-            self.move_down_rows_above(y)
+        def delete():
+            nonlocal deleted_row_count
+            y = self.check_for_complete_rows()
+
+            if y is not None:
+                deleted_row_count += 1
+                for x in range(0, self.across):
+                    cell = self.cells[(x, y)]
+                    cell.active = False
+                    self.active_cells.remove(cell)
+                # Dealing with potential multiple complete rows.
+                delete()
+                self.move_down_rows_above(y)
+        delete()
+
+        return deleted_row_count
 
     def update_cell_colours(self):
         """

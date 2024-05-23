@@ -8,6 +8,7 @@ class Game:
         self.display = Display(self.grid)
         self.game_tick_time = 100  # 1000ms
         self.game_loop_id = None
+        self.score = 0
 
         self.grid.generate_new_block()
 
@@ -29,13 +30,26 @@ class Game:
         move_successful = self.grid.current_block.attempt_move_down(self.grid)
         if not move_successful:
             self.grid.mark_cells_active()
-            self.grid.delete_complete_rows()
+            rows_deleted_count = self.grid.delete_complete_rows()
+            self.change_score(rows_deleted_count)
             game_over = self.grid.generate_new_block()
 
         if game_over:
             self.game_over()
         else:
             self.set_game_loop()
+
+    def change_score(self, rows_deleted_count):
+        if rows_deleted_count == 1:
+            multiplier = 100
+        elif rows_deleted_count == 2:
+            multiplier = 300
+        elif rows_deleted_count == 3:
+            multiplier = 600
+        else:
+            multiplier = 1000
+
+        self.score += rows_deleted_count*multiplier
 
     def run(self):
         self.set_game_loop()
